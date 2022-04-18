@@ -2,6 +2,10 @@ import config
 from command import *
 from dice import *
 import cmd
+try:
+    import readline
+except ImportError:
+    import pyreadline as readline
 
 D2 = Dice(2)
 D3 = Dice(3)

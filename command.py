@@ -40,8 +40,10 @@ def command(input):
             if len(args) > 0:
                 n_save = int(args[0])
             if len(args) > 1:
-                n_wounds = int(args[1])
-            gameplay.save(n_save, n_wounds)
+                n_penetration = int(args[1])
+            if len(args) > 2:
+                n_wounds = int(args[2])
+            gameplay.save(n_save, n_penetration, n_wounds)
 
         case "exit":
             config.is_active = False
