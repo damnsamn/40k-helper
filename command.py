@@ -2,6 +2,15 @@ import config
 import gameplay
 from dice import Dice
 
+class Command:
+    def __init__(self, callback_function, *args):
+        self.args = args
+        self.callback_function = callback_function
+
+        try:
+            self.callback_function(*self.args)
+        except Exception as e:
+            print("Incorrect arguments:", format(e))
 
 def command(input):
     input_array = input.split(" ")
@@ -16,34 +25,16 @@ def command(input):
     match cmd:
 
         case "roll":
-            n_dice = int(args[0]) if len(args) > 0 else 6
-            n_rolls = int(args[1]) if len(args) > 1 else 1
-            do_roll(n_dice, n_rolls)
+            Command(do_roll, *args)
 
         case "hits":
-            if len(args) > 0:
-                n_skill = int(args[0])
-            if len(args) > 1:
-                n_shots = int(args[1])
-            gameplay.hits(n_skill, n_shots)
+            Command(gameplay.hits, *args)
 
         case "wounds":
-            if len(args) > 0:
-                n_strength = int(args[0])
-            if len(args) > 1:
-                n_toughness = int(args[1])
-            if len(args) > 2:
-                n_hits = int(args[2])
-            gameplay.wounds(n_strength, n_toughness, n_hits)
+            Command(gameplay.wounds, *args)
 
         case "save":
-            if len(args) > 0:
-                n_save = int(args[0])
-            if len(args) > 1:
-                n_penetration = int(args[1])
-            if len(args) > 2:
-                n_wounds = int(args[2])
-            gameplay.save(n_save, n_penetration, n_wounds)
+            Command(gameplay.save, *args)
 
         case "exit":
             config.is_active = False
@@ -62,5 +53,3 @@ def do_roll(n_dice = 6, n_rolls = 1):
         roll = roll[0]
 
     print(roll)
-
-

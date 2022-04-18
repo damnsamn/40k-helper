@@ -3,8 +3,10 @@ from dice import *
 
 
 def hits(skill, shots):
-    dice = Dice(6)
     skill = int(skill)
+    shots = int(shots)
+
+    dice = Dice(6)
     results = dice.roll(int(shots))
 
     def filter_hits(roll):
@@ -17,9 +19,11 @@ def hits(skill, shots):
 
 
 def wounds(strength, toughness, n_hits):
-    dice = Dice(6)
     strength = int(strength)
     toughness = int(toughness)
+    n_hits = int(n_hits)
+
+    dice = Dice(6)
 
     if strength/toughness >= 2:
         compare_roll = 2
@@ -32,7 +36,7 @@ def wounds(strength, toughness, n_hits):
     else:
         compare_roll = 4
 
-    results = dice.roll(int(n_hits))
+    results = dice.roll(n_hits)
 
     def filter_hits(roll):
         return roll >= compare_roll
@@ -43,9 +47,13 @@ def wounds(strength, toughness, n_hits):
 
 
 def save(armour_save, penetration, n_wounds):
+    armour_save = int(armour_save)
+    penetration = int(penetration)
+    n_wounds = int(n_wounds)
+
     dice = Dice(6)
-    armour_save = int(armour_save) + int(penetration)
-    results = dice.roll(int(n_wounds))
+    armour_save = armour_save + penetration
+    results = dice.roll(n_wounds)
 
     def filter_hits(roll):
         return roll >= armour_save
