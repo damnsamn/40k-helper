@@ -27,6 +27,22 @@ def command(input):
                 n_shots = int(args[1])
             gameplay.hits(n_skill, n_shots)
 
+        case "wounds":
+            if len(args) > 0:
+                n_strength = int(args[0])
+            if len(args) > 1:
+                n_toughness = int(args[1])
+            if len(args) > 2:
+                n_hits = int(args[2])
+            gameplay.wounds(n_strength, n_toughness, n_hits)
+
+        case "save":
+            if len(args) > 0:
+                n_save = int(args[0])
+            if len(args) > 1:
+                n_wounds = int(args[1])
+            gameplay.roll_check(n_save, n_wounds)
+
         case "exit":
             config.is_active = False
 
