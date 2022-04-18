@@ -41,7 +41,7 @@ def command(input):
                 n_save = int(args[0])
             if len(args) > 1:
                 n_wounds = int(args[1])
-            gameplay.roll_check(n_save, n_wounds)
+            gameplay.save(n_save, n_wounds)
 
         case "exit":
             config.is_active = False
