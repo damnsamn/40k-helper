@@ -2,7 +2,7 @@
 from dice import *
 
 
-def roll_check(skill, shots):
+def hits(skill, shots):
     dice = Dice(6)
     skill = int(skill)
     results = dice.roll(int(shots))
@@ -41,3 +41,16 @@ def wounds(strength, toughness, n_hits):
 
     print(f'Wounds: {len(successful_wounds)} / {n_hits} - Success: {len(successful_wounds)/n_hits * 100}%')
 
+
+def save(skill, shots):
+    dice = Dice(6)
+    skill = int(skill)
+    results = dice.roll(int(shots))
+
+    def filter_hits(roll):
+        return roll >= skill
+
+    total_hits = list(filter(filter_hits, results))
+
+    print(f'Hits: {len(total_hits)} / {shots} - Success: {len(total_hits)/shots * 100}%')
+    return total_hits
