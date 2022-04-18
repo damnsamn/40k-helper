@@ -15,4 +15,4 @@ class Dice:
       results.append(result)
       sum+=result
       i+=1
-    return {'results': results, "average": sum/n}
+    return results
