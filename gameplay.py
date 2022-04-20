@@ -3,6 +3,7 @@ from dice import *
 
 
 def hits(skill, shots):
+    """[skill] [n_rolls]"""
     skill = int(skill)
     shots = int(shots)
 
@@ -19,6 +20,7 @@ def hits(skill, shots):
 
 
 def wounds(strength, toughness, n_hits):
+    """[strength] [toughness] [n_hits]"""
     strength = int(strength)
     toughness = int(toughness)
     n_hits = int(n_hits)
@@ -47,6 +49,7 @@ def wounds(strength, toughness, n_hits):
 
 
 def save(armour_save, penetration, n_wounds):
+    """[save] [penetration] [n_wounds]"""
     armour_save = int(armour_save)
     penetration = int(penetration)
     n_wounds = int(n_wounds)
