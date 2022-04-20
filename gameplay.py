@@ -1,5 +1,15 @@
-
 from dice import *
+from parse import ClassFactory, model_csv
+
+class Wargear(ClassFactory):
+    def __init__(self, data):
+        ClassFactory.__init__(self, data)
+
+class Model(ClassFactory):
+    def __init__(self, data):
+        ClassFactory.__init__(self, data)
+        self.wargear: list[Wargear] = []
+
 
 
 def hits(skill, shots):
@@ -15,7 +25,8 @@ def hits(skill, shots):
 
     total_hits = list(filter(filter_hits, results))
 
-    print(f'Hits: {len(total_hits)} / {shots} - Success: {len(total_hits)/shots * 100}%')
+    print(
+        f'Hits: {len(total_hits)} / {shots} - Success: {len(total_hits)/shots * 100}%')
     return total_hits
 
 
@@ -45,7 +56,8 @@ def wounds(strength, toughness, n_hits):
 
     total_wounds = list(filter(filter_hits, results))
 
-    print(f'Wounds: {len(total_wounds)} / {n_hits} - Success: {len(total_wounds)/n_hits * 100}%')
+    print(
+        f'Wounds: {len(total_wounds)} / {n_hits} - Success: {len(total_wounds)/n_hits * 100}%')
 
 
 def save(armour_save, penetration, n_wounds):
@@ -63,5 +75,6 @@ def save(armour_save, penetration, n_wounds):
 
     successful_saves = list(filter(filter_hits, results))
 
-    print(f'Saves: {len(successful_saves)} / {n_wounds} - Success: {len(successful_saves)/n_wounds * 100}%')
+    print(
+        f'Saves: {len(successful_saves)} / {n_wounds} - Success: {len(successful_saves)/n_wounds * 100}%')
     return successful_saves
