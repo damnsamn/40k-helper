@@ -1,4 +1,4 @@
-import config
+import state
 from command import *
 from dice import *
 import cmd
@@ -14,7 +14,7 @@ D6 = Dice(6)
 # Clear screen
 print("\033[H\033[2J", end="")
 
-while config.is_active:
+while state.is_active:
 
 
     cmd = input()

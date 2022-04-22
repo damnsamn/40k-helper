@@ -1,5 +1,5 @@
-from typing import Optional, Union, get_origin
-import config
+import saves
+import state
 import gameplay
 from dice import Dice
 
@@ -48,13 +48,17 @@ def command(input):
         case "save":
             Command(cmd, gameplay.save, *args)
 
+        case "save_army":
+            Command(cmd, saves.save_army, *args)
+
+        case "load_army":
+            Command(cmd, saves.load_army, *args)
+
         case "exit":
-            config.is_active = False
+            state.is_active = False
 
         case _:
             print(f'Command "{cmd}" not found')
-
-    config.command_buffer.append(input)
 
 
 def do_roll(n_dice = 6, n_rolls = 1):

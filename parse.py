@@ -7,12 +7,8 @@ def parse_csv(path: str):
             csv_list.append(row)
     return csv_list
 
-
 class ClassFactory:
     """Construct a new class with members matching the key-value pairs of the provided data"""
     def __init__(self, data:dict):
         for key, value in data.items():
             setattr(self, key, value)
-
-model_csv = parse_csv("data/Datasheets_models.csv")
-wargear_csv = parse_csv("data/Datasheets_wargear.csv")

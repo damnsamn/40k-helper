@@ -1,5 +1,7 @@
-from dice import *
-from parse import ClassFactory, model_csv
+import state
+import saves
+from dice import Dice
+from parse import ClassFactory, parse_csv
 
 class Wargear(ClassFactory):
     def __init__(self, data):
@@ -10,8 +12,15 @@ class Model(ClassFactory):
         ClassFactory.__init__(self, data)
         self.wargear: list[Wargear] = []
 
+for model in state.models_csv:
+    state.model_list.append(Model(model))
+
+for wargear in state.wargear_csv:
+    state.wargear_list.append(Wargear(wargear))
 
 
+# Gameplay actions
+# ------------------------------------------
 def hits(skill, shots):
     """[skill] [n_rolls]"""
     skill = int(skill)
