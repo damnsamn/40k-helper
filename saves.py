@@ -1,23 +1,15 @@
 import re
 import os
 import json
+import helpers
 import state
 
 saves_directory = ".saves/"
 
 
-def slugify(string: str):
-    '''Remove dangerous characters for filenames or IDs\n
-    Dashes and spaces become underscores. Any other non-word/digit character is removed'''
-    slugified_string = string.strip().lower()
-    slugified_string = re.sub(r"[\-\s]", "_", slugified_string)
-    slugified_string = re.sub(r"[^\w\d_]", "", slugified_string)
-    return slugified_string
-
-
 def save_army(name: str, verbose: bool = True):
     # Set filename
-    filename = slugify(name)
+    filename = helpers.slugify(name)
     filename = saves_directory + filename + ".json"
 
     # Create subdir if it doesn't already exist
@@ -52,8 +44,10 @@ def save_army(name: str, verbose: bool = True):
                 ref_data.append(model_ref)
 
             # Spit out ref_data as a string, formatted for JSON
-            json_string = re.sub(r"\'", "\"", format(ref_data)) # Swap single-quotes for double-quotes
-            json_string = re.sub(r"\s", "", json_string) # Remove any whitespace
+            # Swap single-quotes for double-quotes
+            json_string = re.sub(r"\'", "\"", format(ref_data))
+            # Remove any whitespace
+            json_string = re.sub(r"\s", "", json_string)
 
             # Save the file
             file.write(json_string)
@@ -66,24 +60,25 @@ def save_army(name: str, verbose: bool = True):
 
 def load_army(filename: str):
     # Format filename
-    filename = slugify(filename)
+    filename = helpers.slugify(filename)
     extension = re.search(r"\.\w+", filename)
-    filename = saves_directory + filename + ("" if extension else ".json")
+    filename += "" if extension else ".json"
 
     try:
         # Open .json
-        with open(filename, 'r') as file:
+        with open(saves_directory + filename, 'r') as file:
             ref_data = json.load(file)
 
             # For each model in ref_data, get the Model and store it
             temp_army = []
             for ref_model in ref_data:
-                model = state.get_model(id=ref_model["datasheet_id"], line=ref_model["line"])
+                model = helpers.search_data( state.all_models,
+                    datasheet_id=ref_model["datasheet_id"], line=ref_model["line"])
                 temp_army.append(model)
 
             # Overwrite current army
             state.army = temp_army
+            print("Load successful:", filename)
 
     except Exception as e:
         print(format(e))
-

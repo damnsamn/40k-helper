@@ -1,22 +1,13 @@
+import classes
+import helpers
 import state
-import saves
 from dice import Dice
-from parse import ClassFactory, parse_csv
-
-class Wargear(ClassFactory):
-    def __init__(self, data):
-        ClassFactory.__init__(self, data)
-
-class Model(ClassFactory):
-    def __init__(self, data):
-        ClassFactory.__init__(self, data)
-        self.wargear: list[Wargear] = []
 
 for model in state.models_csv:
-    state.model_list.append(Model(model))
+    state.all_models.append(classes.Model(model))
 
 for wargear in state.wargear_csv:
-    state.wargear_list.append(Wargear(wargear))
+    state.all_wargear.append(classes.Wargear(wargear))
 
 
 # Gameplay actions
