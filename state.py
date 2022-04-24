@@ -1,3 +1,4 @@
+from classes import Model
 import helpers
 
 # App state
@@ -14,10 +15,16 @@ all_wargear = []
 
 
 def add_model(*args, **kwargs):
-    model = helpers.search_data(all_models, *args, **kwargs)
+    model = helpers.search_data(models_csv, *args, **kwargs)
     if(model):
+        model = Model(model)
         army.append(model)
         print("Added model:", model.name)
+
+def update_model(index, **kwargs):
+    model = army[int(index)]
+    for key, value in kwargs.items():
+        model[key] = value
 
 # def remove_model(ref):
     # Ref can be an index or a name
