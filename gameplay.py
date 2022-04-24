@@ -38,16 +38,7 @@ def wounds(strength, toughness, n_hits):
 
     dice = Dice(6)
 
-    if strength/toughness >= 2:
-        compare_roll = 2
-    elif strength/toughness <= 0.5:
-        compare_roll = 6
-    elif strength > toughness:
-        compare_roll = 3
-    elif strength < toughness:
-        compare_roll = 5
-    else:
-        compare_roll = 4
+    compare_roll = helpers.strenth_toughness_check(strength, toughness)
 
     results = dice.roll(n_hits)
 
@@ -78,3 +69,31 @@ def save(armour_save, penetration, n_wounds):
     print(
         f'Saves: {len(successful_saves)} / {n_wounds} - Success: {len(successful_saves)/n_wounds * 100}%')
     return successful_saves
+
+def probabilities(skill, strength, toughness, armour_save, penetration, shots):
+
+    skill = int(skill)
+    strength = int(strength)
+    toughness = int(toughness)
+    armour_save = int(armour_save)
+    penetration = int(penetration)
+    shots = int(shots)
+
+    chance_hit = (6 - (skill - 1))/6
+    chance_wound = (6 - (helpers.strenth_toughness_check(strength, toughness) - 1))/6
+    chance_save = (6 - ((armour_save + penetration) - 1))/6
+
+    if chance_save < 0:
+        chance_save = 0
+
+    chance_save = 1 - chance_save
+
+    success_chance = chance_hit * chance_wound * chance_save
+
+    success_chance_shots = success_chance
+    for x in range(shots):
+        print_success_chance = int(success_chance_shots * 100)
+        print(f"{x + 1} shot{'s' if x > 0 else ''}: {success_chance_shots}%")
+        success_chance_shots = ((1 - success_chance_shots) * success_chance_shots) + success_chance_shots
+    
+    print(f"{success_chance * shots} average wounds")

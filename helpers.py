@@ -40,3 +40,15 @@ def search_data(iterable, name=None, **data):
         print("Could not find model matching ", query)
     except Exception as e:
         print(format(e))
+
+def strenth_toughness_check(strength, toughness):
+    if strength/toughness >= 2:
+        return 2
+    elif strength/toughness <= 0.5:
+        return 6
+    elif strength > toughness:
+        return 3
+    elif strength < toughness:
+        return 5
+    else:
+        return 4
