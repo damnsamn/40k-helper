@@ -76,6 +76,9 @@ def command(input):
         case "add_model":
             Command(cmd, state.add_model, *args, **kwargs)
 
+        case "fight":
+            Command(cmd, gameplay.fight, *args, **kwargs)
+
         case "exit":
             state.is_active = False
 
