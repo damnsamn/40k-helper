@@ -41,6 +41,20 @@ def search_data(iterable, name=None, **data):
     except Exception as e:
         print(format(e))
 
+class colors:
+    GREY = '\033[90m'
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+
+    END = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    UNDERLINE = '\033[4m'
+    
 def strenth_toughness_check(strength, toughness):
     if strength/toughness >= 2:
         return 2
@@ -51,4 +65,5 @@ def strenth_toughness_check(strength, toughness):
     elif strength < toughness:
         return 5
     else:
+        return 4
         return 4

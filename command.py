@@ -25,22 +25,24 @@ class Command:
 
 
 def command(input):
-    input_array = input.split(" ")
+
+    # Split input_array into command, followed by args/kwargs
+    input_array = re.findall(r'[^\s]*"[^"]+"|[^\s]+', input)
 
     cmd = input_array[0]
-    args = input_array
-    args.pop(0)
+    input_array.pop(0)
 
+    args = []
     kwargs = {}
 
-    # If arg is keyword, assign it
-    for arg in args:
+    for arg in input_array:
+        arg = arg.replace("\"", "")
         if(re.search(r"=", arg)):
             key = re.search(r"(.+?)=", arg).groups(0)[0]
             value = re.search(r"=(.+)", arg).groups(0)[0]
-            i = args.index(arg)
-            args.pop(i)
             kwargs[key] = value
+        else:
+            args.append(arg)
 
     # print(cmd, args)
 
@@ -68,7 +70,7 @@ def command(input):
         case "load_army":
             Command(cmd, saves.load_army, *args, **kwargs)
 
-        case "list_army":
+        case "ls":
             Command(cmd, list_army, *args, **kwargs)
 
         case "add_model":
@@ -78,7 +80,7 @@ def command(input):
             state.is_active = False
 
 
-def do_roll(n_dice = 6, n_rolls = 1):
+def do_roll(n_dice=6, n_rolls=1):
     """[n_dice?] [n_rolls?]"""
     dice = Dice(int(n_dice))
     n_rolls = int(n_rolls)
@@ -89,8 +91,25 @@ def do_roll(n_dice = 6, n_rolls = 1):
 
     print(roll)
 
-def list_army():
-    army_list = []
-    for model in state.army:
-        army_list.append(model.name)
-    print(format(army_list))
+
+def list_army(index=None):
+    if index:  # List index's datasheets
+        model = state.army[int(index)]
+        print(helpers.colors.MAGENTA + model.name + helpers.colors.END)
+        print(f"{helpers.colors.BOLD}M:{helpers.colors.END} {model.M}")
+        print(f"{helpers.colors.BOLD}WS:{helpers.colors.END} {model.WS}")
+        print(f"{helpers.colors.BOLD}BS:{helpers.colors.END} {model.BS}")
+        print(f"{helpers.colors.BOLD}S:{helpers.colors.END} {model.S}")
+        print(f"{helpers.colors.BOLD}T:{helpers.colors.END} {model.T}")
+        print(f"{helpers.colors.BOLD}W:{helpers.colors.END} {model.W}")
+        print(f"{helpers.colors.BOLD}A:{helpers.colors.END} {model.A}")
+        print(f"{helpers.colors.BOLD}Ld:{helpers.colors.END} {model.Ld}")
+        print(f"{helpers.colors.BOLD}Sv:{helpers.colors.END} {model.Sv}")
+    else:  # List all
+        for i, model in enumerate(state.army):
+            print(
+                helpers.colors.BOLD +
+                f"[{i}]: " +
+                helpers.colors.END +
+                model.name
+            )
