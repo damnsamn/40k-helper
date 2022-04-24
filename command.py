@@ -58,6 +58,9 @@ def command(input):
         case "wounds":
             Command(cmd, gameplay.wounds, *args, **kwargs)
 
+        case "probabilities":
+            Command(cmd, gameplay.probabilities, *args, **kwargs)
+
         case "save":
             Command(cmd, gameplay.save, *args, **kwargs)
 
@@ -75,9 +78,6 @@ def command(input):
 
         case "exit":
             state.is_active = False
-
-        case _:
-            print(f'Command "{cmd}" not found')
 
 
 def do_roll(n_dice=6, n_rolls=1):

@@ -56,3 +56,17 @@ class colors:
     END = '\033[0m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
+    UNDERLINE = '\033[4m'
+    
+def strenth_toughness_check(strength, toughness):
+    if strength/toughness >= 2:
+        return 2
+    elif strength/toughness <= 0.5:
+        return 6
+    elif strength > toughness:
+        return 3
+    elif strength < toughness:
+        return 5
+    else:
+        return 4
+        return 4
