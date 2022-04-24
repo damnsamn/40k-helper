@@ -17,6 +17,9 @@ def slugify(string: str):
     slugified_string = re.sub(r"[^\w\d_]", "", slugified_string)
     return slugified_string
 
+def sanitise(string):
+    return re.search(r"\d+", string)
+
 def search_data(iterable, name=None, **data):
     query = {}
 
