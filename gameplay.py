@@ -93,7 +93,19 @@ def probabilities(skill, strength, toughness, armour_save, penetration, shots):
     success_chance_shots = success_chance
     for x in range(shots):
         print_success_chance = int(success_chance_shots * 100)
-        print(f"{x + 1} shot{'s' if x > 0 else ''}: {success_chance_shots}%")
+        print(f"{x + 1} shot{'s' if x > 0 else ''}: {print_success_chance}%")
         success_chance_shots = ((1 - success_chance_shots) * success_chance_shots) + success_chance_shots
     
     print(f"{success_chance * shots} average wounds")
+
+def fight(attacker, defender):
+    attacker = state.army[int(attacker)]
+    defender = state.army[int(defender)]
+    WS = helpers.sanitise(attacker.WS)
+    S = helpers.sanitise(attacker.S)
+    T = helpers.sanitise(defender.T)
+    Sv = helpers.sanitise(defender.Sv)
+    AP = 0
+    A = helpers.sanitise(attacker.A)
+
+    probabilities(WS, S, T, Sv, AP, A)

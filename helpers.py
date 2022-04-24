@@ -18,7 +18,7 @@ def slugify(string: str):
     return slugified_string
 
 def sanitise(string):
-    return re.search(r"\d+", string)
+    return int(re.search(r"\d+", string).group(0))
 
 def search_data(iterable, name=None, **data):
     query = {}
