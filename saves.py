@@ -5,26 +5,36 @@ import helpers
 import state
 
 saves_directory = ".saves/"
+state_path = ".saves/.state"
 
+def new_army():
+    save_state("")
+    state.army = []
+    state.loaded_army = []
+    print("Loaded army has been cleared successfully")
 
-def save_army(name: str, verbose: bool = True):
+def save_army(name: str = None, verbose: bool = True):
+    """save_army [name?]"""
     # Set filename
-    filename = helpers.slugify(name)
-    filename = saves_directory + filename + ".json"
+    if not name:
+        filename = state.loaded_army or input("Name: ")
+    else:
+        filename = helpers.slugify(name) + ".json"
+    full_path = saves_directory + filename
 
     # Create subdir if it doesn't already exist
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
     # Does this file already exist? Prompt for overwrite
-    if(os.path.exists(filename)):
+    if(os.path.exists(full_path)):
         overwrite = input(
-            f"File {filename} already exists.\nDo you want to overwrite? [Y/N]\n")
+            f"File {full_path} already exists.\nDo you want to overwrite? [Y/N]\n")
         if (overwrite == "n" or overwrite == "N"):
             return
 
     try:
         # Create file
-        with open(filename, "w") as file:
+        with open(full_path, "w") as file:
             ref_data = []
             for model in state.army:
 
@@ -52,33 +62,43 @@ def save_army(name: str, verbose: bool = True):
             # Save the file
             file.write(json_string)
             if(verbose):
-                print(f"Save successful: {filename}")
+                print(f"Save successful: {full_path}")
 
     except Exception as e:
         print(format(e))
 
 
 def load_army(filename: str):
+    """load_army [name]"""
     # Format filename
-    filename = helpers.slugify(filename)
     extension = re.search(r"\.\w+", filename)
     filename += "" if extension else ".json"
 
-    try:
-        # Open .json
-        with open(saves_directory + filename, 'r') as file:
-            ref_data = json.load(file)
+    with open(saves_directory + filename, 'r') as file:
+        ref_data = json.load(file)
 
-            # For each model in ref_data, get the Model and store it
-            temp_army = []
-            for ref_model in ref_data:
-                model = helpers.search_data( state.all_models,
-                    datasheet_id=ref_model["datasheet_id"], line=ref_model["line"])
-                temp_army.append(model)
+        # For each model in ref_data, get the Model and store it
+        temp_army = []
+        for ref_model in ref_data:
+            model = helpers.search_data( state.all_models,
+                datasheet_id=ref_model["datasheet_id"], line=ref_model["line"])
+            temp_army.append(model)
 
-            # Overwrite current army
-            state.army = temp_army
-            print("Load successful:", filename)
+        # Overwrite current army
+        state.army = temp_army
+        state.loaded_army = filename
+        save_state(filename)
+        print("Load successful:", filename)
 
-    except Exception as e:
-        print(format(e))
+def save_state(data):
+    with open(state_path, "w") as file:
+        file.write(data)
+
+def read_state():
+        with open(state_path, "r") as file:
+            return file.read()
+
+def load_from_state():
+    filename = read_state()
+    if(filename):
+        load_army(filename)

@@ -1,7 +1,7 @@
 import state
 from command import *
 from dice import *
-import cmd
+import saves
 # try:
 import readline
 # except ImportError:
@@ -13,6 +13,8 @@ D6 = Dice(6)
 
 # Clear screen
 print("\033[H\033[2J", end="")
+
+saves.load_from_state()
 
 while state.is_active:
 

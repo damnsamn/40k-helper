@@ -22,7 +22,7 @@ class Command:
             return
         else:
             try:
-                self.callback_function(*self.args, **self.kwargs)
+            self.callback_function(*self.args, **self.kwargs)
             except TypeError as e:
                 print(style.red(format(e)))
 
@@ -68,6 +68,9 @@ def command(input):
         case "save":
             Command(cmd, gameplay.save, *args, **kwargs)
 
+        case "new_army":
+            Command(cmd, saves.new_army, *args, **kwargs)
+
         case "save_army":
             Command(cmd, saves.save_army, *args, **kwargs)
 
@@ -82,6 +85,9 @@ def command(input):
 
         case "update_model":
             Command(cmd, state.update_model, *args, **kwargs)
+
+        case "remove_model":
+            Command(cmd, state.remove_model, *args, **kwargs)
 
         case "fight":
             Command(cmd, gameplay.fight, *args, **kwargs)
