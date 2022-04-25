@@ -1,5 +1,5 @@
 import re
-import helpers
+from helpers import style
 import saves
 import state
 import gameplay
@@ -16,12 +16,16 @@ class Command:
         if self.args.count("?"):
             doc = self.callback_function.__doc__
             if doc:
-                print(f'{self.name} {doc}')
+                print(style.magenta(f'{self.name} {doc}'))
             else:
-                print(f'No help specified for command "{self.name}"')
+                print(style.grey(f'No help specified for command "{self.name}"'))
             return
         else:
-            self.callback_function(*self.args, **self.kwargs)
+            try:
+                self.callback_function(*self.args, **self.kwargs)
+            except TypeError as e:
+                print(style.red(format(e)))
+
 
 
 def command(input):
@@ -85,6 +89,9 @@ def command(input):
         case "exit":
             state.is_active = False
 
+        case _:
+            print(style.red(f'Command "{cmd}" not found'))
+
 
 def do_roll(n_dice=6, n_rolls=1):
     """[n_dice?] [n_rolls?]"""
@@ -101,21 +108,18 @@ def do_roll(n_dice=6, n_rolls=1):
 def list_army(index=None):
     if index:  # List index's datasheets
         model = state.army[int(index)]
-        print(helpers.colors.MAGENTA + model.name + helpers.colors.END)
-        print(f"{helpers.colors.BOLD}M:{helpers.colors.END} {model.M}")
-        print(f"{helpers.colors.BOLD}WS:{helpers.colors.END} {model.WS}")
-        print(f"{helpers.colors.BOLD}BS:{helpers.colors.END} {model.BS}")
-        print(f"{helpers.colors.BOLD}S:{helpers.colors.END} {model.S}")
-        print(f"{helpers.colors.BOLD}T:{helpers.colors.END} {model.T}")
-        print(f"{helpers.colors.BOLD}W:{helpers.colors.END} {model.W}")
-        print(f"{helpers.colors.BOLD}A:{helpers.colors.END} {model.A}")
-        print(f"{helpers.colors.BOLD}Ld:{helpers.colors.END} {model.Ld}")
-        print(f"{helpers.colors.BOLD}Sv:{helpers.colors.END} {model.Sv}")
+        print(style.magenta(style.bold(model.name)))
+        print(f"{style.bold('M:')} {style.TAB} {model.M}")
+        print(f"{style.bold('WS:')} {style.TAB} {model.WS}")
+        print(f"{style.bold('BS:')} {style.TAB} {model.BS}")
+        print(f"{style.bold('S:')} {style.TAB} {model.S}")
+        print(f"{style.bold('T:')} {style.TAB} {model.T}")
+        print(f"{style.bold('W:')} {style.TAB} {model.W}")
+        print(f"{style.bold('A:')} {style.TAB} {model.A}")
+        print(f"{style.bold('Ld:')} {style.TAB} {model.Ld}")
+        print(f"{style.bold('Sv:')} {style.TAB} {model.Sv}")
     else:  # List all
         for i, model in enumerate(state.army):
             print(
-                helpers.colors.BOLD +
-                f"[{i}]: " +
-                helpers.colors.END +
-                model.name
+                style.bold(f"[{i}]: ") + model.name
             )
