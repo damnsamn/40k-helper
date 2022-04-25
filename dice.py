@@ -6,7 +6,6 @@ class Dice:
 
   # Roll dice n number of times
   def roll(self, n = 1):
-    n = int(n) or 1;
     i = 0
     results = []
     sum = 0

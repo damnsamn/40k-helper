@@ -23,12 +23,11 @@ def add_model(*args, **kwargs):
         print("Added model:", model.name)
 
 def update_model(index, **kwargs):
-    model = army[int(index)]
+    model = army[index]
     for key, value in kwargs.items():
         model[key] = value
 
 def remove_model(index):
-    index = int(index)
     model = army[index]
     if(model):
         army.pop(index)

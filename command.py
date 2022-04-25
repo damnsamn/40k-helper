@@ -22,7 +22,7 @@ class Command:
             return
         else:
             try:
-            self.callback_function(*self.args, **self.kwargs)
+                self.callback_function(*self.args, **self.kwargs)
             except TypeError as e:
                 print(style.red(format(e)))
 
@@ -31,7 +31,7 @@ class Command:
 def command(input):
 
     # Split input_array into command, followed by args/kwargs
-    input_array = re.findall(r'[^\s]*"[^"]+"|[^\s]+', input)
+    input_array = re.findall(r'[^\s]*?"[^"]+"|[^\s]+', input)
 
     cmd = input_array[0]
     input_array.pop(0)
@@ -44,8 +44,10 @@ def command(input):
         if(re.search(r"=", arg)):
             key = re.search(r"(.+?)=", arg).groups(0)[0]
             value = re.search(r"=(.+)", arg).groups(0)[0]
+            value = int(value) if value.isnumeric() else value
             kwargs[key] = value
         else:
+            arg = int(arg) if arg.isnumeric() else arg
             args.append(arg)
 
     # print(cmd, args)
@@ -101,8 +103,7 @@ def command(input):
 
 def do_roll(n_dice=6, n_rolls=1):
     """[n_dice?] [n_rolls?]"""
-    dice = Dice(int(n_dice))
-    n_rolls = int(n_rolls)
+    dice = Dice(n_dice)
     roll = dice.roll(n_rolls)
 
     if len(roll) == 1:
@@ -113,7 +114,7 @@ def do_roll(n_dice=6, n_rolls=1):
 
 def list_army(index=None):
     if index:  # List index's datasheets
-        model = state.army[int(index)]
+        model = state.army[index]
         print(style.magenta(style.bold(model.name)))
         print(f"{style.bold('M:')} {style.TAB} {model.M}")
         print(f"{style.bold('WS:')} {style.TAB} {model.WS}")

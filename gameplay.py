@@ -14,11 +14,8 @@ for wargear in state.wargear_csv:
 # ------------------------------------------
 def hits(skill, shots):
     """[skill] [n_rolls]"""
-    skill = int(skill)
-    shots = int(shots)
-
     dice = Dice(6)
-    results = dice.roll(int(shots))
+    results = dice.roll(shots)
 
     def filter_hits(roll):
         return roll >= skill
@@ -32,10 +29,6 @@ def hits(skill, shots):
 
 def wounds(strength, toughness, n_hits):
     """[strength] [toughness] [n_hits]"""
-    strength = int(strength)
-    toughness = int(toughness)
-    n_hits = int(n_hits)
-
     dice = Dice(6)
 
     compare_roll = helpers.strenth_toughness_check(strength, toughness)
@@ -53,10 +46,6 @@ def wounds(strength, toughness, n_hits):
 
 def save(armour_save, penetration, n_wounds):
     """[save] [penetration] [n_wounds]"""
-    armour_save = int(armour_save)
-    penetration = int(penetration)
-    n_wounds = int(n_wounds)
-
     dice = Dice(6)
     armour_save = armour_save + penetration
     results = dice.roll(n_wounds)
@@ -71,14 +60,6 @@ def save(armour_save, penetration, n_wounds):
     return successful_saves
 
 def probabilities(skill, strength, toughness, armour_save, penetration, shots):
-
-    skill = int(skill)
-    strength = int(strength)
-    toughness = int(toughness)
-    armour_save = int(armour_save)
-    penetration = int(penetration)
-    shots = int(shots)
-
     chance_hit = (6 - (skill - 1))/6
     chance_wound = (6 - (helpers.strenth_toughness_check(strength, toughness) - 1))/6
     chance_save = (6 - ((armour_save + penetration) - 1))/6
@@ -95,12 +76,12 @@ def probabilities(skill, strength, toughness, armour_save, penetration, shots):
         print_success_chance = int(success_chance_shots * 100)
         print(f"{x + 1} shot{'s' if x > 0 else ''}: {print_success_chance}%")
         success_chance_shots = ((1 - success_chance_shots) * success_chance_shots) + success_chance_shots
-    
+
     print(f"{success_chance * shots} average wounds")
 
 def fight(attacker, defender):
-    attacker = state.army[int(attacker)]
-    defender = state.army[int(defender)]
+    attacker = state.army[attacker]
+    defender = state.army[defender]
     WS = helpers.sanitise(attacker.WS)
     S = helpers.sanitise(attacker.S)
     T = helpers.sanitise(defender.T)
