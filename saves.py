@@ -94,9 +94,14 @@ def save_state(data):
     with open(state_path, "w") as file:
         file.write(data)
 
+
 def read_state():
+    try:
         with open(state_path, "r") as file:
             return file.read()
+    except:
+        return None
+
 
 def load_from_state():
     filename = read_state()
