@@ -21,4 +21,8 @@ class Model(ClassFactory):
         ClassFactory.__init__(self, data)
         self.wargear: list[Wargear] = []
 
+    def add_wargear(self, wg:Wargear):
+        """Add an already-instantiated Wargear object"""
+        self.wargear.append(wg)
+
 

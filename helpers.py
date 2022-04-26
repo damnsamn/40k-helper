@@ -43,13 +43,12 @@ def search_data(iterable, name=None, **data):
         model = next(filter(filter_items, iterable))
         return model
     except StopIteration as e:
-        print("Could not find model matching ", query)
+        print("Could not find item matching ", query)
     except Exception as e:
         print(format(e))
 
 
 class style:
-    TAB = '\011'
     GREY = '\033[90m'
     RED = '\033[91m'
     GREEN = '\033[92m'

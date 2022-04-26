@@ -91,6 +91,9 @@ def command(input):
         case "remove_model":
             Command(cmd, state.remove_model, *args, **kwargs)
 
+        case "add_wargear":
+            Command(cmd, state.add_wargear, *args, **kwargs)
+
         case "fight":
             Command(cmd, gameplay.fight, *args, **kwargs)
 
@@ -116,15 +119,20 @@ def list_army(index=None):
     if index != None:  # List index's datasheets
         model = state.army[index]
         print(f"{style.magenta(style.bold(model.name))}")
-        print(f"{style.bold('M:')} {style.TAB} {model.M}")
-        print(f"{style.bold('WS:')} {style.TAB} {model.WS}")
-        print(f"{style.bold('BS:')} {style.TAB} {model.BS}")
-        print(f"{style.bold('S:')} {style.TAB} {model.S}")
-        print(f"{style.bold('T:')} {style.TAB} {model.T}")
-        print(f"{style.bold('W:')} {style.TAB} {model.W}")
-        print(f"{style.bold('A:')} {style.TAB} {model.A}")
-        print(f"{style.bold('Ld:')} {style.TAB} {model.Ld}")
-        print(f"{style.bold('Sv:')} {style.TAB} {model.Sv}")
+        print(f"{style.bold('M:')}\t{model.M}")
+        print(f"{style.bold('WS:')}\t{model.WS}")
+        print(f"{style.bold('BS:')}\t{model.BS}")
+        print(f"{style.bold('S:')}\t{model.S}")
+        print(f"{style.bold('T:')}\t{model.T}")
+        print(f"{style.bold('W:')}\t{model.W}")
+        print(f"{style.bold('A:')}\t{model.A}")
+        print(f"{style.bold('Ld:')}\t{model.Ld}")
+        print(f"{style.bold('Sv:')}\t{model.Sv}")
+        if model.wargear:
+            print(f"{style.bold('Wargear:')}")
+            for i, wg in enumerate(model.wargear):
+                print(f"- {style.bold(f'[{i}]:')}\t{wg.name}")
+                print(f"|\t{wg.Range}\t{wg.type}\tS: {wg.S}\tAP: {wg.AP}\tD: {wg.D}")
     else:  # List all
         for i, model in enumerate(state.army):
             print(

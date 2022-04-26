@@ -7,11 +7,13 @@ import state
 saves_directory = ".saves/"
 state_path = ".saves/.state"
 
+
 def new_army():
     save_state("")
     state.army = []
     state.loaded_army = []
     print("Loaded army has been cleared successfully")
+
 
 def save_army(name: str = None, verbose: bool = True):
     """save_army [name?]"""
@@ -45,9 +47,9 @@ def save_army(name: str = None, verbose: bool = True):
 
                 # If the model has wargear, store the "wargear_id" and "line" of each
                 if(model.wargear):
-                    model_ref.wargear = []
+                    model_ref["wargear"] = []
                     for wargear in model.wargear:
-                        model_ref.wargear.append({
+                        model_ref["wargear"].append({
                             "wargear_id": wargear.wargear_id,
                             "line": wargear.line
                         })
@@ -61,6 +63,8 @@ def save_army(name: str = None, verbose: bool = True):
 
             # Save the file
             file.write(json_string)
+            state.loaded_army = filename
+            save_state(filename)
             if(verbose):
                 print(f"Save successful: {full_path}")
 
@@ -78,17 +82,27 @@ def load_army(filename: str):
         ref_data = json.load(file)
 
         # For each model in ref_data, get the Model and store it
-        temp_army = []
+        state.army = []
         for ref_model in ref_data:
-            model = helpers.search_data( state.all_models,
-                datasheet_id=ref_model["datasheet_id"], line=ref_model["line"])
-            temp_army.append(model)
+            model = helpers.search_data(
+                state.all_models,  # All of type Model
+                datasheet_id=ref_model["datasheet_id"],
+                line=ref_model["line"]
+            )
+            for ref_wg in ref_model.get("wargear", []):
+                wg = helpers.search_data(
+                    state.all_wargear,  # All of type Wargear
+                    wargear_id=ref_wg["wargear_id"],
+                    line=ref_wg["line"]
+                )
+                model.add_wargear(wg)
+            state.army.append(model)
 
         # Overwrite current army
-        state.army = temp_army
         state.loaded_army = filename
         save_state(filename)
         print("Load successful:", filename)
+
 
 def save_state(data):
     with open(state_path, "w") as file:
