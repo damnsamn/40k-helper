@@ -113,9 +113,9 @@ def do_roll(n_dice=6, n_rolls=1):
 
 
 def list_army(index=None):
-    if index:  # List index's datasheets
+    if index != None:  # List index's datasheets
         model = state.army[index]
-        print(style.magenta(style.bold(model.name)))
+        print(f"{style.magenta(style.bold(model.name))}")
         print(f"{style.bold('M:')} {style.TAB} {model.M}")
         print(f"{style.bold('WS:')} {style.TAB} {model.WS}")
         print(f"{style.bold('BS:')} {style.TAB} {model.BS}")
