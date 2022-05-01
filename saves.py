@@ -1,6 +1,7 @@
 import re
 import os
 import json
+from classes import Model, Wargear
 import helpers
 import state
 
@@ -84,17 +85,17 @@ def load_army(filename: str):
         # For each model in ref_data, get the Model and store it
         state.army = []
         for ref_model in ref_data:
-            model = helpers.search_data(
-                state.all_models,  # All of type Model
+            model = Model(helpers.search_data(
+                state.models_csv,
                 datasheet_id=ref_model["datasheet_id"],
                 line=ref_model["line"]
-            )
+            )[0])
             for ref_wg in ref_model.get("wargear", []):
-                wg = helpers.search_data(
-                    state.all_wargear,  # All of type Wargear
+                wg = Wargear(helpers.search_data(
+                    state.wargear_csv,
                     wargear_id=ref_wg["wargear_id"],
                     line=ref_wg["line"]
-                )
+                )[0])
                 model.add_wargear(wg)
             state.army.append(model)
 

@@ -3,11 +3,7 @@ import helpers
 import state
 from dice import Dice
 
-for model in state.models_csv:
-    state.all_models.append(classes.Model(model))
 
-for wargear in state.wargear_csv:
-    state.all_wargear.append(classes.Wargear(wargear))
 
 
 # Gameplay actions

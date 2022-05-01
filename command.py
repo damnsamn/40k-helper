@@ -1,5 +1,5 @@
 import re
-from helpers import style
+from helpers import style, Table
 import saves
 import state
 import gameplay
@@ -22,7 +22,7 @@ class Command:
             return
         else:
             try:
-                self.callback_function(*self.args, **self.kwargs)
+            self.callback_function(*self.args, **self.kwargs)
             except TypeError as e:
                 print(style.red(format(e)))
 
@@ -94,6 +94,9 @@ def command(input):
         case "add_wargear":
             Command(cmd, state.add_wargear, *args, **kwargs)
 
+        case "remove_wargear":
+            Command(cmd, state.remove_wargear, *args, **kwargs)
+
         case "fight":
             Command(cmd, gameplay.fight, *args, **kwargs)
 
@@ -116,25 +119,42 @@ def do_roll(n_dice=6, n_rolls=1):
 
 
 def list_army(index=None):
-    if index != None:  # List index's datasheets
+    if index == None:
+        # Table army
+        table_array = []
+        for model in state.army:
+            table_array.append(model.__dict__.copy())
+        table = Table(
+            table_array,
+            "Model List",
+            [("index", ""), ("name", "Name"), "M", "WS", "BS", "S", "T", "W", "A", "Ld", "Sv"])
+        table.print()
+    else:
+        # List index's datasheets
         model = state.army[index]
-        print(f"{style.magenta(style.bold(model.name))}")
-        print(f"{style.bold('M:')}\t{model.M}")
-        print(f"{style.bold('WS:')}\t{model.WS}")
-        print(f"{style.bold('BS:')}\t{model.BS}")
-        print(f"{style.bold('S:')}\t{model.S}")
-        print(f"{style.bold('T:')}\t{model.T}")
-        print(f"{style.bold('W:')}\t{model.W}")
-        print(f"{style.bold('A:')}\t{model.A}")
-        print(f"{style.bold('Ld:')}\t{model.Ld}")
-        print(f"{style.bold('Sv:')}\t{model.Sv}")
-        if model.wargear:
-            print(f"{style.bold('Wargear:')}")
-            for i, wg in enumerate(model.wargear):
-                print(f"- {style.bold(f'[{i}]:')}\t{wg.name}")
-                print(f"|\t{wg.Range}\t{wg.type}\tS: {wg.S}\tAP: {wg.AP}\tD: {wg.D}")
-    else:  # List all
-        for i, model in enumerate(state.army):
-            print(
-                style.bold(f"[{i}]: ") + model.name
+        model_table = Table(
+            [model.__dict__.copy()],
+            "Model",
+            [("name", "Name"), "M", "WS", "BS", "S", "T", "W", "A", "Ld", "Sv"]
+        )
+        model_table.print()
+
+        if model.damage_profiles:
+            damage_profile_table = Table(
+                model.damage_profiles,
+                "Damage Profiles",
+                rename={"RemainingW": "Wounds"}
             )
+            damage_profile_table.print()
+
+        if model.wargear:
+            wg_table_array = []
+            for wg in model.wargear:
+                wg_table_array.append(wg.__dict__.copy())
+            wg_table = Table(
+                wg_table_array,
+                "Wargear",
+                [("index", ""), ("name", "Name"), "Range", ("type", "Type"), "S", "AP", "D"]
+            )
+            wg_table.print()
+

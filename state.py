@@ -1,12 +1,13 @@
 from classes import Model, Wargear
-import helpers
+from helpers import search_data, Table, parse_csv
 
 # App state
 is_active = True
 
 # Parse models
-models_csv = helpers.parse_csv("data/Datasheets_models.csv")
-wargear_csv = helpers.parse_csv("data/Wargear_list.csv")
+models_csv = parse_csv("data/Datasheets_models.csv")
+wargear_csv = parse_csv("data/Wargear_list.csv")
+damage_profiles_csv = parse_csv("data/Datasheets_damage.csv")
 
 army = []
 loaded_army = None
@@ -16,7 +17,7 @@ all_wargear = []
 
 
 def add_model(*args, **kwargs):
-    model = helpers.search_data(models_csv, *args, **kwargs)
+    model = search_data(models_csv, *args, **kwargs)[0]
     if(model):
         model = Model(model)
         army.append(model)
@@ -30,10 +31,19 @@ def update_model(index, **kwargs):
 def remove_model(index):
     model = army[index]
     if(model):
+        print("Removed model:", model.name)
         army.pop(index)
 
 def add_wargear(model_index, *args, **kwargs):
     model: Model = army[model_index]
-    wargear = helpers.search_data(wargear_csv, *args, **kwargs)
+    wargear = search_data(wargear_csv, *args, **kwargs)[0]
     if(model and wargear):
+        print("Added wargear:", wargear.name, "to model:", model.name)
         model.add_wargear(Wargear(wargear))
+
+def remove_wargear(model_index, wargear_index):
+    model = army[model_index]
+    if(model):
+        print("Removed wargear:", model.wargear[wargear_index].name, "from model:", model.name)
+        model.remove_wargear(wargear_index)
+
