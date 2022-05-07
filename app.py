@@ -1,6 +1,7 @@
 import state
 from command import *
 from dice import *
+from helpers import style
 import saves
 # try:
 import readline
@@ -19,6 +20,6 @@ saves.load_from_state()
 while state.is_active:
 
 
-    cmd = input()
+    cmd = input(style.yellow("> "))
     if cmd:
         command(cmd)

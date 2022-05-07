@@ -1,5 +1,5 @@
 from classes import Model, Wargear
-from helpers import search_data, Table, parse_csv
+from helpers import search_data, Table, parse_csv, did_you_mean, style
 
 # App state
 is_active = True
@@ -15,13 +15,21 @@ loaded_army = None
 all_models = []
 all_wargear = []
 
-
 def add_model(*args, **kwargs):
-    model = search_data(models_csv, *args, **kwargs)[0]
-    if(model):
-        model = Model(model)
+    model = search_data(models_csv, *args, **kwargs)
+    if(len(model)):
+        model = Model(model[0])
         army.append(model)
         print("Added model:", model.name)
+    elif len(args) == 1: # If only a name was provided
+        name = args[0]
+        correction = did_you_mean(name, models_csv)
+        if(correction):
+            model = Model(correction)
+            army.append(model)
+            print("Added model:", model.name)
+
+
 
 def update_model(index, **kwargs):
     model = army[index]
@@ -36,10 +44,19 @@ def remove_model(index):
 
 def add_wargear(model_index, *args, **kwargs):
     model: Model = army[model_index]
-    wargear = search_data(wargear_csv, *args, **kwargs)[0]
-    if(model and wargear):
-        print("Added wargear:", wargear.name, "to model:", model.name)
-        model.add_wargear(Wargear(wargear))
+    wargear = search_data(wargear_csv, *args, **kwargs)
+    if model:
+        if len(wargear):
+            wargear = Wargear(wargear[0])
+            model.add_wargear(wargear)
+            print(f"Added wargear {style.bold(wargear.name)} to model {style.bold(model.name)}")
+        elif len(args) == 1: # If only a name was provided
+            name = args[0]
+            correction = did_you_mean(name, wargear_csv)
+            if(correction):
+                wargear = Wargear(correction)
+                model.add_wargear(wargear)
+                print(f"Added wargear {style.bold(wargear.name)} to model {style.bold(model.name)}")
 
 def remove_wargear(model_index, wargear_index):
     model = army[model_index]

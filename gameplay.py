@@ -56,6 +56,7 @@ def save(armour_save, penetration, n_wounds):
     return successful_saves
 
 def probabilities(skill, strength, toughness, armour_save, penetration, shots):
+    """[skill] [strength] [toughness] [save] [ap] [shots]"""
     chance_hit = (6 - (skill - 1))/6
     chance_wound = (6 - (helpers.strenth_toughness_check(strength, toughness) - 1))/6
     chance_save = (6 - ((armour_save + penetration) - 1))/6
@@ -76,6 +77,7 @@ def probabilities(skill, strength, toughness, armour_save, penetration, shots):
     print(f"{success_chance * shots} average wounds")
 
 def fight(attacker, defender):
+    """[attacker_index] [defender_index]"""
     attacker = state.army[attacker]
     defender = state.army[defender]
     WS = helpers.sanitise(attacker.WS)

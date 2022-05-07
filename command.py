@@ -21,10 +21,10 @@ class Command:
                 print(style.grey(f'No help specified for command "{self.name}"'))
             return
         else:
-            # try:
-            self.callback_function(*self.args, **self.kwargs)
-            # except TypeError as e:
-                # print(style.red(format(e)))
+            try:
+                self.callback_function(*self.args, **self.kwargs)
+            except Exception as e:
+                print(style.red(format(e)))
 
 
 

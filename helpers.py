@@ -1,6 +1,7 @@
 import csv
 import re
 
+
 def parse_csv(path: str):
     csv_list = []
     with open(path, newline="", encoding='utf-8-sig') as csv_file:
@@ -43,6 +44,24 @@ def search_data(iterable, name=None, **data):
         return results
     except StopIteration as e:
         print("Could not find item matching ", query)
+    except Exception as e:
+        print(format(e))
+
+
+def search_data_partial(iterable, query: tuple):
+    def filter_items(item):
+        searchable = item[query[0]].lower()
+        search = query[1]
+        if (search in searchable):
+            return True
+        else:
+            return False
+
+    try:
+        results = list(filter(filter_items, iterable))
+        return results
+    except StopIteration as e:
+        print("Could not find any items partially matching ", query)
     except Exception as e:
         print(format(e))
 
@@ -104,15 +123,14 @@ def strenth_toughness_check(strength, toughness):
 
 
 class Table():
-
-    def __init__(self, data:list[dict], heading:str=None, headers:list[str|tuple]=None, rename:dict = None):
+    def __init__(self, data: list[dict], heading: str = None, headers: list[str | tuple] = None, rename: dict = None, auto_index: bool = False):
         self.data = data
         for i, item in enumerate(self.data):
             item["index"] = i
         self.stringify_data()
 
         self.heading = heading
-        self.headers = self.get_headers(headers, rename)
+        self.headers = self.get_headers(headers, rename, auto_index)
         self.get_col_widths()
 
         self.chars = {
@@ -144,13 +162,13 @@ class Table():
             for key, value in row.items():
                 row[key] = str(value)
 
-    def get_headers(self, flat_list, rename):
+    def get_headers(self, flat_list, rename, auto_index):
         # If we're not passed a list, create one based on the data
         if not flat_list:
             flat_list = []
             for row in self.data:
                 for key, value in row.items():
-                    if not key in flat_list and key != "index":
+                    if not key in flat_list and key != "index" and auto_index:
                         flat_list.append(key)
 
         header_list = []
@@ -161,7 +179,8 @@ class Table():
                 header_dict["label"] = value[1]
             else:
                 header_dict["key"] = value
-                header_dict["label"] = rename[value] if rename and value in rename.keys() else value
+                header_dict["label"] = rename[value] if rename and value in rename.keys(
+                ) else value
 
             header_list.append(header_dict)
 
@@ -199,7 +218,8 @@ class Table():
             print(style.bold(style.blue(self.chars["lt"] +
                   (self.chars["h"] * (len(self.heading) + 2)) +
                   self.chars["rt"])))
-            print(style.bold(style.blue(self.chars["v"] + " " + self.heading + " " + self.chars["v"])))
+            print(style.bold(style.blue(
+                self.chars["v"] + " " + self.heading + " " + self.chars["v"])))
 
         self.print_separator("t")
 
@@ -225,7 +245,9 @@ class Table():
             if header["key"] in item.keys():
                 row += " " * (self.cell_padding_L)
                 row += item[header["key"]]
-                row += " " * (header["width"] - len(item[header["key"]]) + self.cell_padding_R)
+                row += " " * \
+                    (header["width"] - len(item[header["key"]]) +
+                     self.cell_padding_R)
             else:
                 row += " " * (header["width"] + self.cell_padding_total)
             row += self.chars["v"]
@@ -236,6 +258,38 @@ class Table():
         for header in self.headers:
             row += " " * (self.cell_padding_L)
             row += style.magenta(style.bold(header["label"]))
-            row += " " * (header["width"] - len(header["label"]) + self.cell_padding_R)
+            row += " " * (header["width"] -
+                          len(header["label"]) + self.cell_padding_R)
             row += self.chars["v"]
         print(row)
+
+
+def did_you_mean(search_term, iterable):
+    original_search = search_term
+    matches = []
+    while len(search_term) and len(matches) < 5:
+        search = search_data_partial(iterable, ("name", search_term))
+        if len(search):
+            for match in search:
+                if len(matches) < 5 and match not in matches:
+                    matches.append(match)
+                else:
+                    break
+        search_term = search_term[0:-1]
+
+    if len(matches) > 0:
+        dym_table = Table(
+            matches,
+            "Did you mean?",
+            [("index", ""), ("name", "Name"), "M", "WS", "BS", "S", "T", "W", "A", "Ld", "Sv"]
+        )
+        dym_table.print()
+        print(style.magenta(f"Enter index, or nothing (TODO: Reword)"))
+        user_input = input()
+
+        if(len(user_input)):
+            return matches[int(user_input)]
+        else:
+            return
+    else:
+        print("No matches found for", original_search)
